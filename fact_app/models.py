@@ -10,7 +10,7 @@ class Customer(models.Model):
     name = models.CharField(max_length=122)
     email= models.EmailField()
     phone= models.CharField(max_length=132)
-    address= models.CharField(max_length=64)
+    address= models.CharField(max_length=645)
     sex = models.CharField(max_length=1, choices=SEX_TYPES)
     age = models.CharField(max_length=12)
     city = models.CharField(max_length=32)
@@ -25,7 +25,8 @@ class Customer(models.Model):
 class Invoice(models.Model):
     INVOICE_TYPE = [
         ("R","RECU"),
-        ("R","PR"),
+        ("R","PROFORMA FACTURE"),
+        ("F","FACTURE"),
     ]
     customer = models.ForeignKey(Customer,on_delete=models.PROTECT)
     save_by = models.ForeignKey(User, on_delete=models.PROTECT)
