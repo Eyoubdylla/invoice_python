@@ -24,9 +24,9 @@ class Customer(models.Model):
             return self.name
 class Invoice(models.Model):
     INVOICE_TYPE = [
-        ("R","RECU"),
-        ("R","PROFORMA FACTURE"),
-        ("F","FACTURE"),
+        ("R","RECEIP"),
+        ("P","PROFORMA INVOICE"),
+        ("I","INVOICE"),
     ]
     customer = models.ForeignKey(Customer,on_delete=models.PROTECT)
     save_by = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -55,6 +55,9 @@ class Article(models.Model):
      class Meta:
         verbose_name="article"
         verbose_name_plural = "articles"
+     def __str__(self):
+        return self.name
+    
      @property
      def get_total(self):
          total = self.quantity * self.unit_price
