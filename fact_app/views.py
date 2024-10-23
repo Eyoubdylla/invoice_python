@@ -3,7 +3,7 @@ from django.views import View
 from .models import *
 from django.contrib import messages
 from django.db import transaction
-
+from .utils import pagination
 
 # Create your views here.
 class HomeView(View):
@@ -14,9 +14,13 @@ class HomeView(View):
         'invoices' : invoices
     }
     def get(self, request, *args, **kwagrs):
+        items = pagination(request, self.invoices)
+        self.context['invoices'] = items
         return render(request, self.template_name, self.context)
     
     def post(self, request, *args, **kwagrs):
+        items = pagination(request, self.invoices)
+        self.context['invoices'] = items
         return render(request, self.template_name, self.context)
   
 class AddCustomerView(View):
