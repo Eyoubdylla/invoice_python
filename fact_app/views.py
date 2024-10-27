@@ -121,4 +121,15 @@ class AddInvoiceView(View):
             messages.error(request, f"sorry the following error has occured {e}")   
         print(data)        
         return render(request, self.template_name, self.context)
+class InvoiceVisualizationView(View):
+    tamplate_name = 'invoice.html'
+    def get(self, request, *args, **kwargs):
+        pk=kwargs.get('pk')
+        obj=Invoice.objects.get(pk=pk)
+        articles = obj.article_set.all()
+        context = {
+            'obj':obj,
+            'articles' : articles
+        }
+        return render(request,self.tamplate_name, context)
         
