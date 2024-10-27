@@ -19,6 +19,27 @@ class HomeView(View):
         return render(request, self.template_name, self.context)
     
     def post(self, request, *args, **kwagrs):
+        # modifier
+        if request.POST.get('id_modified'):
+            paid = request.POST.get('modified')
+            try :
+                obj = Invoice.objects.get(id=request.POST.get('id_modified'))
+                if paid == 'True':
+                    obj.paid = True
+                else:
+                    obj.paid = False
+                obj.save()
+                messages.success(request, "change mode successfully")
+            except Exception as e:
+                messages.error(request, f"soory the following erros has occured {e}.")
+        #deleting an invoice
+        if request.POST.get('id_supprimer'):
+            try:
+                obj = Invoice.objects.get(pk=request.POST.get('id_supprimer'))
+                obj.delete()
+                messages.success(request,"the deletion was seccessful")
+            except Exception as e:
+                messages.error(request, f"sorry, the following error has accured {e}")
         items = pagination(request, self.invoices)
         self.context['invoices'] = items
         return render(request, self.template_name, self.context)

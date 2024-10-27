@@ -43,22 +43,22 @@
                 <td >{{facture.total}}</td>
                 <td >
                     {% if facture.paid %}
-                    <img src="{% static 'images/icon-yes.svg' %}" alt="True">
-                    (% else %)
-                    <img src="{% static 'images/icon-no.svg' %}" alt="False">
+                        <img src="{% static 'images/icon-yes.svg'%}" alt="True">
+                    {% else %}
+                        <img src="{% static 'images/icon-no.svg'%}" alt="False">
                     {% endif %}
                 </td>
                 <th >{{facture.get_invoice_type_display}}</td>
                 <td >
                     <a href="" title="Detail" class="badge text-white bg-success">View</a>
 
-                    <button id="btn-invoice-sup" type="button" data.toggle="modal" data-target="#supprimer"
-                        class="badge text-white bg-danger" title="supprimer" data.id="{{facture.pk}}"
+                    <button id="btn-invoice-sup" type="button" data-toggle="modal" data-target="#supprimer"
+                        class="badge text-white bg-danger" title="supprimer" data-id="{{facture.pk}}"
                         data-customer="{{facture.customer.name}}">Delete
                     </button>
 
-                    <button id="btn-invoice-sup" type="button" data.toggle="modal" data-target="#modifier"
-                        class="badge text-white bg-danger" title="supprimer" data.customer="{{facture.customer.name}}"
+                    <button id="btn-invoice-mod" type="button" data-toggle="modal" data-target="#modifier"
+                        class="badge text-white bg-danger" data-id="{{facture.pk}}" title="modifier" data.customer="{{facture.customer.name}}"
                        class="badge text-dark bg-warning">Modifier
                     </button>
                 </td>
@@ -91,26 +91,26 @@
         </tbody>
     </table>
 </div>
-<!------------- modal modifier --------------------------------------->
+<!------------- modal modifier ------------------------------>
 <div class="modal fade" id="modifier" tabindex="-1" role="dialog" aria-labelledby="exempleModallabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-dark text-center" id="examplemodallabel">Modification</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="closd">
+                <button type="button" class="close" data-dismiss="modal" aria-label="close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <form method="post">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <input name="id_modifed" type="hidden" id="id_modified">
+                    <input name="id_modified" type="hidden" id="id_modified">
                     <label id='label_id' class="text-dark checkbox-inline" ><strong id="strong_id">this bill has been paid ?</strong></label>
 
-                    <input  type="radio" id="html" value="True">
+                    <input  type="radio" id="html" name="modified" value="True">
                     <label  class="text-white bg-primary" for="html">Yes</label>
 
-                    <input  type="radio" id="css" name="modifer" value="False">
+                    <input  type="radio" id="css" name="modified" value="False">
                     <label  class="text-white bg-danger" for="css">No</label>
                 </div>
                 <div class="modal-footer">
@@ -123,38 +123,53 @@
 </div>
 <!------------ end modal ------------------------------>
 <!-- Modal suppression -->
- <div class="mdel fade" id="supprimer" tabindex="-1" role="dialog" aria-labelledby="sexampleModallabel" aria-hidden="true">
+ <div class="modal fade" id="supprimer" tabindex="-1" role="dialog" aria-labelledby="sexampleModallabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div modal-header>
-                <h5 class="modal-title text-dark" id="sexampleModallabel">Delete Invoice</h5>
+            <div class="modal-header">
+                <h5 class="modal-title text-dark text-center" id="sexampleModallabel">Delete Invoice</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
                 <form method="post">
                     {% csrf_token %}
+                    <div class="modal-body">
                         <input name="id_supprimer" type="hidden" id="id_supprimer">
                         <label id='label_id_s' class="text-dark checkbox-inline" ><strong id="strong_id_s">are you sure you want to delete the invoice ?</strong></label>
 
-                        <input  type="radio" id="html" value="True">
+                        <input  type="radio" id="html" name= "supprimer" value="True">
                         <label  class="text-white bg-primary" for="html">Yes</label>
 
-                        <input  type="radio" id="css" name="modifer" value="False">
+                        <input  type="radio" id="css" name="supprimer" value="False">
                         <label  class="text-white bg-danger" for="css">No</label>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type=" submit" class="btn btn-primary">Save</button>
+                        <button type=" submit" class="btn btn-primary">Delete</button>
+                    </div>
                 </form>
             </div>
         </div>
-
     </div>
-
  </div>
+ <script type="text/javascript">
+    //modification
+    $(document).on('click','#btn-invoice-mod', function(){
+        let invoice_id = $(this).data('id');
+        let customer = $(this).data('customer');
+        $('#id_modified').val(invoice_id);
+     })
+     // deleting to invoice
+     $(document).on('click','#btn-invoice-sup', function(){
+        let invoice_id = $(this).data('id');
+        let customer = $(this).data('customer');
+        $('#id_supprimer').val(invoice_id);
+     })
+
+ </script>
  <script>
+    // modification
     $(document).ready(function(){
         $("#search").on("keyup", function(){
             var value = $(this).val().toLowerCase();
