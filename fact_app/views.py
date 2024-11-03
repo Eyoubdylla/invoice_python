@@ -2,8 +2,14 @@ from django.shortcuts import render
 from django.views import View
 from .models import *
 from django.contrib import messages
+from django.http import HttpResponse
+import pdfkit
+"""permet de recuperer un fichier html"""
+from django.template.loader import get_template
 from django.db import transaction
-from .utils import pagination
+import datetime
+from .utils import pagination, get_invoice
+
 
 # Create your views here.
 class HomeView(View):
@@ -125,11 +131,36 @@ class InvoiceVisualizationView(View):
     tamplate_name = 'invoice.html'
     def get(self, request, *args, **kwargs):
         pk=kwargs.get('pk')
-        obj=Invoice.objects.get(pk=pk)
-        articles = obj.article_set.all()
-        context = {
-            'obj':obj,
-            'articles' : articles
-        }
+        context = get_invoice(pk)
         return render(request,self.tamplate_name, context)
+
+
+def get_invoice_pdf(request, *args, **kwargs):
+    """generate pdf file  from html"""
+    pk = kwargs.get('pk')
+    context = get_invoice(pk)
+    
+    context['data'] = datetime.datetime.today()
+    
+    #get html file
+    template = get_template('invoice-pdf.html')
+    
+    #render html with contex variables
+    html = template.render(context)
+    
+    #option of pdf
+    options = {
+        'page-size': 'Letter',
+        'encoding' : 'UTF-8',
+        "enable-local-file-access": ""
+    }
+    #generate Pdf
+    pdf = pdfkit.from_string(html, False, options)
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = "attachment"
+    return response
+    
+    
+
+
         

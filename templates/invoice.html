@@ -16,7 +16,7 @@
     						<div class="row gutters">
     							<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
     								<div class="custom-actions-btns mb-5">
-    									<a href="" class="btn btn-primary">
+    									<a href="{% url 'invoice-pdf' pk=obj.pk %}" class="btn btn-primary">
     										<i class="icon-download"></i> Download
     									</a>
     									<a href="#" class="btn btn-secondary">
@@ -161,7 +161,7 @@
     					</div>
     
     					<div class="invoice-footer">
-    						Thank you for your purchase .
+    						Thank you for your purchase {{date}} .
     					</div>
     
     				</div>
